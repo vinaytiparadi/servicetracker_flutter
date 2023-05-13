@@ -3,22 +3,20 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'FormModel.g.dart';
 
-class DateTimeConverter implements JsonConverter<Timestamp, DateTime> {
+class DateTimeConverter {
   const DateTimeConverter();
 
-  @override
-  DateTime fromJson(Timestamp timestamp) {
+  static DateTime toJson(Timestamp timestamp) {
     return timestamp.toDate();
   }
 
-  @override
-  Timestamp toJson(DateTime dateTime) {
+  static Timestamp fromJson(DateTime dateTime) {
     return Timestamp.fromDate(dateTime);
   }
 }
 
 
-@JsonSerializable(converters: [DateTimeConverter()])
+@JsonSerializable()
 class FormData {
   final String customerName;
   final String customerPrimaryContactNumber;
@@ -30,7 +28,9 @@ class FormData {
   final double balanceAmount;
   final double totalAmount;
   final String phoneCollectorName;
+  @JsonKey(fromJson: DateTimeConverter.fromJson, toJson: DateTimeConverter.toJson)
   final Timestamp deviceSubmittedTimestamp;
+  @JsonKey(fromJson: DateTimeConverter.fromJson, toJson: DateTimeConverter.toJson)
   final Timestamp deviceCollectedTimestamp;
   final DateTime dateSubmitted;
   final DateTime dateCollected;
