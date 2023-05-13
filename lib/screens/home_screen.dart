@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:service_tracker/providers/firebase_auth_methods.dart';
 
 import 'form_screen.dart';
 
@@ -16,7 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<FirebaseAuthMethods>().user;
+    // final user = context.read<FirebaseAuthMethods>().user;
     return Scaffold(
       // appBar: AppBar(title: Text('Home Screen'),centerTitle: true,),
       bottomNavigationBar: NavigationBar(
