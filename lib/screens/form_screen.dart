@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
@@ -118,7 +119,7 @@ class _FormScreenState extends State<FormScreen> {
                   controller: customerPrimaryContactNumberController,
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
-                  // maxLength: 10,
+                  maxLength: 10,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 30, vertical: 10),
@@ -135,7 +136,7 @@ class _FormScreenState extends State<FormScreen> {
                   controller: customerSecondaryContactNumberController,
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
-                  // maxLength: 10,
+                  maxLength: 10,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 30, vertical: 10),
@@ -284,6 +285,7 @@ class _FormScreenState extends State<FormScreen> {
                   },
                   child: AbsorbPointer(
                     child: TextFormField(
+                      textInputAction: TextInputAction.none,
                       controller: deviceSubmittedDateController,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
@@ -305,6 +307,7 @@ class _FormScreenState extends State<FormScreen> {
                   },
                   child: AbsorbPointer(
                     child: TextFormField(
+                      textInputAction: TextInputAction.none,
                       controller: deviceCollectedDateController,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
@@ -371,6 +374,7 @@ class _FormScreenState extends State<FormScreen> {
                 //
                 //       // Timestamp timestamp = Timestamp.fromDate(_selectedSubmitDate);
                 //       // print(timestamp);
+                //       // print(timestamp);
                 //     }
                 //     },
                 //     child: const Text("Save Data"),
@@ -379,21 +383,29 @@ class _FormScreenState extends State<FormScreen> {
 
                 Consumer<FormProvider>(
                   builder: (context, provider, child) {
-                    return provider.loading
-                        ? Center(
-                            child: const SpinKitCubeGrid(
+                    return formMethods.loading
+                        ? const Center(
+                            child: SpinKitDualRing(
                               color: Colors.red,
-                              size: 50.0,
+                              size: 40.0,
                             ),
                           )
                         : SizedBox(
                             height: scHeight(context) * 0.059,
                             width: double.infinity,
                             child: FilledButton(
-                              onPressed: () {
+                              onPressed: () async{
+
+                                final connectivityResult = await (Connectivity().checkConnectivity());
+                                if(connectivityResult == ConnectivityResult.none){
+                                  Utils.flushBarErrorMessages('Check your internet connection!', context);
+                                  return;
+                                }
+
                                 if (formKey.currentState!.validate()) {
+
                                   try {
-                                    provider.setSaving(true);
+                                    formMethods.setSaving(true);
                                     FormData formData = FormData(
                                         customerNameController.text,
                                         customerPrimaryContactNumberController
@@ -436,18 +448,13 @@ class _FormScreenState extends State<FormScreen> {
                                       deviceSubmittedDateController.clear();
                                       deviceCollectedDateController.clear();
 
-                                      provider.setSaving(false);
+                                      formMethods.setSaving(false);
                                     });
                                   } on FirebaseException catch (e) {
-                                    // Show a flushbar if there's no internet connection
-                                    if (e.code == 'failed-precondition') {
-                                      Utils.flushBarErrorMessages(
-                                          'No internet connection!', context);
-                                    } else {
-                                      Utils.flushBarErrorMessages(
-                                          e.toString(), context);
-                                    }
-                                    provider.setSaving(false);
+                                    print(formMethods.loading);
+                                    formMethods.setSaving(false);
+                                    Utils.flushBarErrorMessages(
+                                        e.toString(), context);
                                   }
                                 }
                               },
