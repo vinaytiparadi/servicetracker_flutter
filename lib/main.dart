@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:service_tracker/providers/firebase_auth_methods.dart';
+import 'package:service_tracker/providers/form_methods.dart';
 import 'package:service_tracker/screens/home_screen.dart';
 import 'package:service_tracker/screens/login_screen.dart';
 import 'firebase_options.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
           create: (context) => context.read<FirebaseAuthMethods>().authState,
           initialData: null,
         ),
+        ChangeNotifierProvider(create: (_) => FormProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:service_tracker/utils/utility_methods.dart';
 import '../ form_validation/validation_logic.dart';
+import '../providers/form_methods.dart';
 import '../utils/constants.dart';
+import '../models/FormModel.dart';
 
 class FormScreen extends StatefulWidget {
   const FormScreen({Key? key}) : super(key: key);
@@ -75,24 +80,8 @@ class _FormScreenState extends State<FormScreen> {
   }
 
   @override
-  void dispose() {
-    customerNameController.dispose();
-    customerPrimaryContactNumberController.dispose();
-    customerSecondaryContactNumberController.dispose();
-    customerSmartPhoneBrandController.dispose();
-    customerSmartPhoneModelController.dispose();
-    totalRepairCostController.dispose();
-    advancePaidController.dispose();
-    balanceAmountController.dispose();
-    totalAmountReceivedController.dispose();
-    phoneCollectorNameController.dispose();
-    deviceSubmittedDateController.dispose();
-    deviceCollectedDateController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final formMethods = Provider.of<FormProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Data'),
@@ -302,7 +291,7 @@ class _FormScreenState extends State<FormScreen> {
                         border: outlineEnabledBorder(),
                         labelText: 'Date of Submission',
                         hintText: 'Select Date',
-                        suffixIcon: Icon(Icons.calendar_today),
+                        suffixIcon: const Icon(Icons.calendar_today),
                       ),
                     ),
                   ),
@@ -323,7 +312,7 @@ class _FormScreenState extends State<FormScreen> {
                         border: outlineEnabledBorder(),
                         labelText: 'Date of Collection',
                         hintText: 'Select Date',
-                        suffixIcon: Icon(Icons.calendar_today),
+                        suffixIcon: const Icon(Icons.calendar_today),
                       ),
                     ),
                   ),
@@ -331,24 +320,143 @@ class _FormScreenState extends State<FormScreen> {
                 SizedBox(
                   height: scHeight(context) * 0.03,
                 ),
-                SizedBox(
-                  height: scHeight(context) * 0.059,
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Processing Data'),
-                          ),
-                        );
-                      }
-                      // Timestamp timestamp = Timestamp.fromDate(_selectedSubmitDate);
-                      // print(timestamp);
-                    },
-                    child: const Text("Save Data"),
-                  ),
+                // SizedBox(
+                //   height: scHeight(context) * 0.059,
+                //   width: double.infinity,
+                //   child:
+                //   FilledButton(
+                //     onPressed: () {
+                //       if (formKey.currentState!.validate()) {
+                //
+                //         try{
+                //           FormData formData = FormData(
+                //               customerNameController.text,
+                //               customerPrimaryContactNumberController.text,
+                //               customerSecondaryContactNumberController.text,
+                //               customerSmartPhoneBrandController.text,
+                //               customerSmartPhoneModelController.text,
+                //               double.parse(totalRepairCostController.text),
+                //               double.parse(advancePaidController.text),
+                //               double.parse(balanceAmountController.text), double.parse(totalAmountReceivedController.text),
+                //               phoneCollectorNameController.text,
+                //               Timestamp.fromDate(_selectedSubmitDate),
+                //               Timestamp.fromDate(_selectedCollectDate),
+                //               _selectedSubmitDate,
+                //               _selectedCollectDate);
+                //
+                //           formMethods.saveDataToFirestore('service_history', formData.toJson());
+                //
+                //           customerNameController.clear();
+                //           customerPrimaryContactNumberController.clear();
+                //           customerSecondaryContactNumberController.clear();
+                //           customerSmartPhoneBrandController.clear();
+                //           customerSmartPhoneModelController.clear();
+                //           totalRepairCostController.clear();
+                //           advancePaidController.clear();
+                //           balanceAmountController.clear();
+                //           totalAmountReceivedController.clear();
+                //           phoneCollectorNameController.clear();
+                //           deviceSubmittedDateController.clear();
+                //           deviceCollectedDateController.clear();
+                //         }
+                //         catch(e){
+                //           Utils.flushBarErrorMessages(e.toString(), context);
+                //         }
+                //         // ScaffoldMessenger.of(context).showSnackBar(
+                //         //   const SnackBar(
+                //         //     content: Text('Processing Data'),
+                //         //   ),
+                //         // );
+                //
+                //
+                //       // Timestamp timestamp = Timestamp.fromDate(_selectedSubmitDate);
+                //       // print(timestamp);
+                //     }
+                //     },
+                //     child: const Text("Save Data"),
+                //   ),
+                // ),
+
+                Consumer<FormProvider>(
+                  builder: (context, provider, child) {
+                    return provider.loading
+                        ? Center(
+                            child: const SpinKitCubeGrid(
+                              color: Colors.red,
+                              size: 50.0,
+                            ),
+                          )
+                        : SizedBox(
+                            height: scHeight(context) * 0.059,
+                            width: double.infinity,
+                            child: FilledButton(
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
+                                  try {
+                                    provider.setSaving(true);
+                                    FormData formData = FormData(
+                                        customerNameController.text,
+                                        customerPrimaryContactNumberController
+                                            .text,
+                                        customerSecondaryContactNumberController
+                                            .text,
+                                        customerSmartPhoneBrandController.text,
+                                        customerSmartPhoneModelController.text,
+                                        double.parse(
+                                            totalRepairCostController.text),
+                                        double.parse(
+                                            advancePaidController.text),
+                                        double.parse(
+                                            balanceAmountController.text),
+                                        double.parse(
+                                            totalAmountReceivedController.text),
+                                        phoneCollectorNameController.text,
+                                        Timestamp.fromDate(_selectedSubmitDate),
+                                        Timestamp.fromDate(
+                                            _selectedCollectDate),
+                                        _selectedSubmitDate,
+                                        _selectedCollectDate);
+
+                                    formMethods
+                                        .saveDataToFirestore('service_history',
+                                            formData.toJson())
+                                        .then((_) {
+                                      customerNameController.clear();
+                                      customerPrimaryContactNumberController
+                                          .clear();
+                                      customerSecondaryContactNumberController
+                                          .clear();
+                                      customerSmartPhoneBrandController.clear();
+                                      customerSmartPhoneModelController.clear();
+                                      totalRepairCostController.clear();
+                                      advancePaidController.clear();
+                                      balanceAmountController.clear();
+                                      totalAmountReceivedController.clear();
+                                      phoneCollectorNameController.clear();
+                                      deviceSubmittedDateController.clear();
+                                      deviceCollectedDateController.clear();
+
+                                      provider.setSaving(false);
+                                    });
+                                  } on FirebaseException catch (e) {
+                                    // Show a flushbar if there's no internet connection
+                                    if (e.code == 'failed-precondition') {
+                                      Utils.flushBarErrorMessages(
+                                          'No internet connection!', context);
+                                    } else {
+                                      Utils.flushBarErrorMessages(
+                                          e.toString(), context);
+                                    }
+                                    provider.setSaving(false);
+                                  }
+                                }
+                              },
+                              child: const Text("Save Data"),
+                            ),
+                          );
+                  },
                 ),
+
                 SizedBox(
                   height: scHeight(context) * 0.02,
                 ),
@@ -358,5 +466,22 @@ class _FormScreenState extends State<FormScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    customerNameController.dispose();
+    customerPrimaryContactNumberController.dispose();
+    customerSecondaryContactNumberController.dispose();
+    customerSmartPhoneBrandController.dispose();
+    customerSmartPhoneModelController.dispose();
+    totalRepairCostController.dispose();
+    advancePaidController.dispose();
+    balanceAmountController.dispose();
+    totalAmountReceivedController.dispose();
+    phoneCollectorNameController.dispose();
+    deviceSubmittedDateController.dispose();
+    deviceCollectedDateController.dispose();
+    super.dispose();
   }
 }
