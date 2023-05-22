@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../models/FormModel.dart';
 import '../providers/post_provider.dart';
 
-
 class PostListPage extends StatefulWidget {
   @override
   _PostListPageState createState() => _PostListPageState();
@@ -13,7 +12,6 @@ class PostListPage extends StatefulWidget {
 class _PostListPageState extends State<PostListPage> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
 
   @override
   void initState() {
@@ -45,53 +43,49 @@ class _PostListPageState extends State<PostListPage> {
   void _searchPosts(String query) {
     final provider = Provider.of<PostListProvider>(context, listen: false);
     provider.searchPosts(query);
-    setState(() {
-      _searchQuery = query;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final postsProvider = Provider.of<PostListProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Posts'),
+        title: Text('Data'),
+        centerTitle: true,
       ),
       body: Column(
         children: [
-          // Padding(
-          //   padding: EdgeInsets.all(8.0),
-          //   child: TextField(
-          //     controller: _searchController,
-          //     decoration: InputDecoration(
-          //       labelText: 'Search by customer name',
-          //       suffixIcon: IconButton(
-          //         icon: Icon(Icons.search),
-          //         onPressed: () {
-          //           _searchPosts(_searchController.text.trim());
-          //         },
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          TextFormField(
-            controller: _searchController,
-            decoration: InputDecoration(),
-            onChanged: (String text){
-              _searchPosts(_searchController.text.trim());
-            },
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              controller: _searchController,
+              onChanged: (String query) {
+                if (query == '') {
+                  postsProvider.posts
+                      .sort((a, b) => b.timestamp.compareTo(a.timestamp));
+                  _refreshPosts();
+                } else {
+                  _searchPosts(query);
+                }
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(35.0),
+                ),
+                labelText: 'Search using Customer Name',
+                hintText: 'Enter Customer Name',
+              ),
+            ),
           ),
           Expanded(
             child: Consumer<PostListProvider>(
               builder: (context, provider, _) {
                 if (provider.isLoading && provider.posts.isEmpty) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 } else if (provider.hasError) {
-                  return Center(child: Text('Error loading posts'));
+                  return const Center(child: Text('Error loading posts'));
                 } else {
-                  List<FormData> filteredPosts = provider.posts;
-                  if (_searchQuery.isNotEmpty) {
-                    filteredPosts = provider.filterPosts(_searchQuery);
-                  }
+                  final filteredPosts = provider.posts;
                   return ListView.builder(
                     controller: _scrollController,
                     itemCount: filteredPosts.length + 1,
@@ -99,14 +93,13 @@ class _PostListPageState extends State<PostListPage> {
                       if (index < filteredPosts.length) {
                         final post = filteredPosts[index];
                         // Display post data here
-
                         return ListTile(
                           title: Text(post.customerName),
                           subtitle: Text(post.customerPrimaryContactNumber),
                           // Display other post fields as needed
                         );
                       } else if (provider.isLoading) {
-                        return Center(child: CircularProgressIndicator());
+                        return const Center(child: CircularProgressIndicator());
                       } else {
                         return Container();
                       }
@@ -120,9 +113,8 @@ class _PostListPageState extends State<PostListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _refreshPosts,
-        child: Icon(Icons.refresh),
+        child: const Icon(Icons.refresh),
       ),
     );
   }
 }
-
