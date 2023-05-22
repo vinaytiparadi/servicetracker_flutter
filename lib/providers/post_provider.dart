@@ -92,7 +92,7 @@ class PostListProvider with ChangeNotifier {
 
       _posts = querySnapshot.docs.map((doc) {
         final data = doc.data();
-        return FormData.fromJson(data as Map<String, dynamic>);
+        return FormData.fromJson(data);
       }).toList();
 
       _isLoading = false;

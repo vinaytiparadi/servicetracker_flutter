@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../models/FormModel.dart';
 import '../providers/post_provider.dart';
+import '../utils/widgets/glass_card.dart';
 
 class PostListPage extends StatefulWidget {
   @override
@@ -50,13 +51,13 @@ class _PostListPageState extends State<PostListPage> {
     final postsProvider = Provider.of<PostListProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Data'),
+        title: const Text('Data'),
         centerTitle: true,
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: TextFormField(
               controller: _searchController,
               onChanged: (String query) {
@@ -93,11 +94,7 @@ class _PostListPageState extends State<PostListPage> {
                       if (index < filteredPosts.length) {
                         final post = filteredPosts[index];
                         // Display post data here
-                        return ListTile(
-                          title: Text(post.customerName),
-                          subtitle: Text(post.customerPrimaryContactNumber),
-                          // Display other post fields as needed
-                        );
+                        return GlassCard(data: post,);
                       } else if (provider.isLoading) {
                         return const Center(child: CircularProgressIndicator());
                       } else {
