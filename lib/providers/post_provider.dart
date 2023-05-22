@@ -13,6 +13,8 @@ class PostListProvider with ChangeNotifier {
   bool _hasError = false;
   DocumentSnapshot? _lastDocument;
   String _searchQuery = '';
+  DateTime? _startDate;
+  DateTime? _endDate;
 
   List<FormData> get posts => _posts;
   bool get isLoading => _isLoading;
@@ -49,8 +51,13 @@ class PostListProvider with ChangeNotifier {
         return FormData.fromJson(data as Map<String, dynamic>);
       }).toList();
 
-      _posts.addAll(newPosts);
-      // _posts.sort((a,b)=> b.timestamp.compareTo(a.timestamp));
+      if (_startDate != null && _endDate != null) {
+        _posts.addAll(newPosts.where((post) =>
+        post.dateSubmitted.isAfter(_startDate!) &&
+            post.dateSubmitted.isBefore(_endDate!)));
+      } else {
+        _posts.addAll(newPosts);
+      }
 
       _isLoading = false;
       notifyListeners();
@@ -92,7 +99,7 @@ class PostListProvider with ChangeNotifier {
 
       _posts = querySnapshot.docs.map((doc) {
         final data = doc.data();
-        return FormData.fromJson(data);
+        return FormData.fromJson(data as Map<String, dynamic>);
       }).toList();
 
       _isLoading = false;
@@ -105,5 +112,27 @@ class PostListProvider with ChangeNotifier {
       _hasError = true;
       notifyListeners();
     }
+  }
+
+  void filterPostsByDate(DateTime startDate, DateTime endDate) {
+    _startDate = startDate;
+    _endDate = endDate;
+    fetchPosts();
+  }
+
+  List<FormData> getFilteredPostsByDate() {
+    if (_startDate != null && _endDate != null) {
+      return _posts.where((post) =>
+      post.dateSubmitted.isAfter(_startDate!) &&
+          post.dateSubmitted.isBefore(_endDate!)).toList();
+    } else {
+      return _posts;
+    }
+  }
+
+  void clearFilters() {
+    _startDate = null;
+    _endDate = null;
+    resetPosts();
   }
 }
