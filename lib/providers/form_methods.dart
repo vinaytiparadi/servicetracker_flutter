@@ -18,5 +18,4 @@ class FormProvider with ChangeNotifier{
     await firestore.collection('users').doc(user!.uid).collection(collectionName).add(data);
   }
 
-
 }

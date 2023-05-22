@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:service_tracker/screens/posts_screen.dart';
 
 import 'form_screen.dart';
 
@@ -39,16 +40,17 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: <Widget>[
         FormScreen(),
-        Container(
-          color: Colors.red,
-          alignment: Alignment.center,
-          child: const Text('Page 1'),
-        ),
-        Container(
-          color: Colors.green,
-          alignment: Alignment.center,
-          child: const Text('Page 2'),
-        ),
+        PostListPage()
+        // Container(
+        //   color: Colors.red,
+        //   alignment: Alignment.center,
+        //   child: const Text('Page 1'),
+        // ),
+        // Container(
+        //   color: Colors.green,
+        //   alignment: Alignment.center,
+        //   child: const Text('Page 2'),
+        // ),
       ][currentPageIndex],
     );
   }

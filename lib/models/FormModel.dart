@@ -3,17 +3,17 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'FormModel.g.dart';
 
-class DateTimeConverter {
-  const DateTimeConverter();
-
-  static DateTime toJson(Timestamp timestamp) {
-    return timestamp.toDate();
-  }
-
-  static Timestamp fromJson(DateTime dateTime) {
-    return Timestamp.fromDate(dateTime);
-  }
-}
+// class DateTimeConverter {
+//   const DateTimeConverter();
+//
+//   static DateTime toJson(Timestamp timestamp) {
+//     return timestamp.toDate();
+//   }
+//
+//   static Timestamp fromJson(DateTime dateTime) {
+//     return Timestamp.fromDate(dateTime);
+//   }
+// }
 
 
 @JsonSerializable()
@@ -28,12 +28,13 @@ class FormData {
   final double balanceAmount;
   final double totalAmount;
   final String phoneCollectorName;
-  @JsonKey(fromJson: DateTimeConverter.fromJson, toJson: DateTimeConverter.toJson)
-  final Timestamp deviceSubmittedTimestamp;
-  @JsonKey(fromJson: DateTimeConverter.fromJson, toJson: DateTimeConverter.toJson)
-  final Timestamp deviceCollectedTimestamp;
+  // @JsonKey(fromJson: DateTimeConverter.fromJson, toJson: DateTimeConverter.toJson)
+  // final Timestamp deviceSubmittedTimestamp;
+  // @JsonKey(fromJson: DateTimeConverter.fromJson, toJson: DateTimeConverter.toJson)
+  // final Timestamp deviceCollectedTimestamp;
   final DateTime dateSubmitted;
   final DateTime dateCollected;
+  final int timestamp;
 
   FormData(
       this.customerName,
@@ -46,10 +47,11 @@ class FormData {
       this.balanceAmount,
       this.totalAmount,
       this.phoneCollectorName,
-      this.deviceSubmittedTimestamp,
-      this.deviceCollectedTimestamp,
+      // this.deviceSubmittedTimestamp,
+      // this.deviceCollectedTimestamp,
       this.dateSubmitted,
-      this.dateCollected);
+      this.dateCollected,
+      this.timestamp);
 
   // FromJson
   factory FormData.fromJson(Map<String, dynamic> json) => _$FormDataFromJson(json);

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:service_tracker/utils/utility_methods.dart';
 import '../ form_validation/validation_logic.dart';
 import '../providers/form_methods.dart';
+import '../providers/post_provider.dart';
 import '../utils/constants.dart';
 import '../models/FormModel.dart';
 
@@ -408,6 +409,7 @@ class _FormScreenState extends State<FormScreen> {
                                 if (formKey.currentState!.validate()) {
                                   try {
                                     formMethods.setSaving(true);
+
                                     FormData formData = FormData(
                                         customerNameController.text,
                                         customerPrimaryContactNumberController
@@ -425,11 +427,12 @@ class _FormScreenState extends State<FormScreen> {
                                         double.parse(
                                             totalAmountReceivedController.text),
                                         phoneCollectorNameController.text,
-                                        Timestamp.fromDate(_selectedSubmitDate),
-                                        Timestamp.fromDate(
-                                            _selectedCollectDate),
                                         _selectedSubmitDate,
-                                        _selectedCollectDate);
+                                        _selectedCollectDate,
+                                      DateTime.now().microsecondsSinceEpoch,
+                                    );
+
+
 
                                     formMethods
                                         .saveDataToFirestore('service_history',
@@ -452,6 +455,8 @@ class _FormScreenState extends State<FormScreen> {
 
                                       formMethods.setSaving(false);
                                     });
+
+
                                   } on FirebaseException catch (e) {
                                     print(formMethods.loading);
                                     formMethods.setSaving(false);

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:service_tracker/providers/firebase_auth_methods.dart';
 import 'package:service_tracker/providers/form_methods.dart';
+import 'package:service_tracker/providers/post_provider.dart';
 import 'package:service_tracker/screens/home_screen.dart';
 import 'package:service_tracker/screens/login_screen.dart';
 import 'firebase_options.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
           initialData: null,
         ),
         ChangeNotifierProvider(create: (_) => FormProvider()),
+        ChangeNotifierProvider(create: (_) => PostListProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
