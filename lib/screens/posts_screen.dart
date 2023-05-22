@@ -40,7 +40,9 @@ class _PostListPageState extends State<PostListPage> {
 
   void _refreshPosts() {
     final provider = Provider.of<PostListProvider>(context, listen: false);
-    provider.clearFilters();
+    if(provider.startDate!=null){
+      provider.clearFilters();
+    }
     provider.resetPosts();
   }
 

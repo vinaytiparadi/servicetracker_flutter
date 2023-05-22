@@ -20,6 +20,8 @@ class PostListProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get hasError => _hasError;
 
+  DateTime? get startDate => _startDate;
+
   PostListProvider() {
     fetchPosts();
   }
