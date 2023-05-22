@@ -50,6 +50,12 @@ import '../models/FormModel.dart';
 // }
 
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+
+import '../models/FormModel.dart';
+
 class PostListProvider with ChangeNotifier {
   final int pageSize = 10;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -57,6 +63,7 @@ class PostListProvider with ChangeNotifier {
   bool _isLoading = false;
   bool _hasError = false;
   DocumentSnapshot? _lastDocument;
+  String _searchQuery = '';
 
   List<FormData> get posts => _posts;
   bool get isLoading => _isLoading;
@@ -72,7 +79,9 @@ class PostListProvider with ChangeNotifier {
       notifyListeners();
 
       Query query = _firestore
-          .collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('service_history')
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('service_history')
           .orderBy('timestamp', descending: true)
           .limit(pageSize);
 
@@ -96,7 +105,7 @@ class PostListProvider with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     } catch (error) {
-      if(kDebugMode){
+      if (kDebugMode) {
         print(error.toString());
       }
       _isLoading = false;
@@ -117,5 +126,17 @@ class PostListProvider with ChangeNotifier {
     _posts = [];
     fetchPosts();
   }
+
+  void searchPosts(String query) {
+    _searchQuery = query;
+    notifyListeners();
+  }
+
+  List<FormData> filterPosts(String query) {
+    return _posts
+        .where((post) => post.customerName.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+  }
 }
+
 
