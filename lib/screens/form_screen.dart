@@ -394,16 +394,18 @@ class _FormScreenState extends State<FormScreen> {
                             height: scHeight(context) * 0.059,
                             width: double.infinity,
                             child: FilledButton(
-                              onPressed: () async{
-
-                                final connectivityResult = await (Connectivity().checkConnectivity());
-                                if(connectivityResult == ConnectivityResult.none){
-                                  Utils.flushBarErrorMessages('Check your internet connection!', context);
+                              onPressed: () async {
+                                final connectivityResult =
+                                    await (Connectivity().checkConnectivity());
+                                if (connectivityResult ==
+                                    ConnectivityResult.none) {
+                                  Utils.flushBarErrorMessages(
+                                      'Check your internet connection!',
+                                      context);
                                   return;
                                 }
 
                                 if (formKey.currentState!.validate()) {
-
                                   try {
                                     formMethods.setSaving(true);
                                     FormData formData = FormData(
