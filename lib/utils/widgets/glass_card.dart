@@ -114,6 +114,48 @@ class GlassCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
+                  'Device Submitted:',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0x846c64).withOpacity(1.0),
+                  ),
+                ),
+                Text(
+                  '${data.dateSubmitted.day}/${data.dateSubmitted.month}/${data.dateSubmitted.year}',
+                  style: TextStyle(
+                    fontSize: 19.0,
+                    color: Color(0xac8482).withOpacity(1.0),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Device Collected:',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0x846c64).withOpacity(1.0),
+                  ),
+                ),
+                Text(
+                  '${data.dateCollected.day}/${data.dateCollected.month}/${data.dateCollected.year}',
+                  style: TextStyle(
+                    fontSize: 19.0,
+                    color: Color(0xac8482).withOpacity(1.0),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
                   'Total Repair Cost:',
                   style: TextStyle(
                     fontSize: 16.0,
@@ -123,6 +165,27 @@ class GlassCard extends StatelessWidget {
                 ),
                 Text(
                   '₹'+data.totalRepairCost.toString(),
+                  style: TextStyle(
+                    fontSize: 19.0,
+                    color: Color(0xac8482).withOpacity(1.0),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Amount Received:',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0x846c64).withOpacity(1.0),
+                  ),
+                ),
+                Text(
+                  '₹'+data.totalAmount.toString(),
                   style: TextStyle(
                     fontSize: 19.0,
                     color: Color(0xac8482).withOpacity(1.0),

@@ -36,6 +36,13 @@ String? validateSmartPhoneModel(String? value) {
   return null;
 }
 
+String? validateSmartPhoneIssue(String? value) {
+  if (value == null || value.isEmpty) {
+    return 'SmartPhone Brand Issue cannot be empty.';
+  }
+  return null;
+}
+
 String? validateRepairCost(String? value) {
   if (value == null || value.isEmpty) {
     return 'Cost cannot be empty.';

@@ -30,6 +30,7 @@ class _FormScreenState extends State<FormScreen> {
       TextEditingController();
   TextEditingController customerSmartPhoneModelController =
       TextEditingController();
+  TextEditingController customerSmartPhoneIssueController = TextEditingController();
   TextEditingController totalRepairCostController = TextEditingController();
   TextEditingController advancePaidController = TextEditingController();
   TextEditingController balanceAmountController = TextEditingController();
@@ -38,6 +39,7 @@ class _FormScreenState extends State<FormScreen> {
 
   TextEditingController deviceSubmittedDateController = TextEditingController();
   TextEditingController deviceCollectedDateController = TextEditingController();
+
 
   double balanceAmount = 0;
 
@@ -178,6 +180,22 @@ class _FormScreenState extends State<FormScreen> {
                     hintText: 'Enter SmartPhone Model',
                   ),
                   validator: validateSmartPhoneModel,
+                ),
+                SizedBox(
+                  height: scHeight(context) * 0.02,
+                ),
+                TextFormField(
+                  controller: customerSmartPhoneIssueController,
+                  // textCapitalization: TextCapitalization.words,
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 10),
+                    border: outlineEnabledBorder(),
+                    labelText: 'SmartPhone Issue',
+                    hintText: 'Enter SmartPhone Issue',
+                  ),
+                  validator: validateSmartPhoneIssue,
                 ),
                 SizedBox(
                   height: scHeight(context) * 0.02,
@@ -430,6 +448,7 @@ class _FormScreenState extends State<FormScreen> {
                                         _selectedSubmitDate,
                                         _selectedCollectDate,
                                       DateTime.now().microsecondsSinceEpoch,
+                                      customerSmartPhoneIssueController.text,
                                     );
 
 
@@ -445,6 +464,7 @@ class _FormScreenState extends State<FormScreen> {
                                           .clear();
                                       customerSmartPhoneBrandController.clear();
                                       customerSmartPhoneModelController.clear();
+                                      customerSmartPhoneIssueController.clear();
                                       totalRepairCostController.clear();
                                       advancePaidController.clear();
                                       balanceAmountController.clear();

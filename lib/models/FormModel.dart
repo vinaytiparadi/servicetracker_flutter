@@ -35,6 +35,7 @@ class FormData {
   final DateTime dateSubmitted;
   final DateTime dateCollected;
   final int timestamp;
+  final String deviceIssue;
 
   FormData(
       this.customerName,
@@ -51,7 +52,7 @@ class FormData {
       // this.deviceCollectedTimestamp,
       this.dateSubmitted,
       this.dateCollected,
-      this.timestamp);
+      this.timestamp, this.deviceIssue);
 
   // FromJson
   factory FormData.fromJson(Map<String, dynamic> json) => _$FormDataFromJson(json);
