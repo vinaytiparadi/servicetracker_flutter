@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
@@ -30,7 +33,8 @@ class _FormScreenState extends State<FormScreen> {
       TextEditingController();
   TextEditingController customerSmartPhoneModelController =
       TextEditingController();
-  TextEditingController customerSmartPhoneIssueController = TextEditingController();
+  TextEditingController customerSmartPhoneIssueController =
+      TextEditingController();
   TextEditingController totalRepairCostController = TextEditingController();
   TextEditingController advancePaidController = TextEditingController();
   TextEditingController balanceAmountController = TextEditingController();
@@ -39,7 +43,6 @@ class _FormScreenState extends State<FormScreen> {
 
   TextEditingController deviceSubmittedDateController = TextEditingController();
   TextEditingController deviceCollectedDateController = TextEditingController();
-
 
   double balanceAmount = 0;
 
@@ -342,64 +345,6 @@ class _FormScreenState extends State<FormScreen> {
                 SizedBox(
                   height: scHeight(context) * 0.03,
                 ),
-                // SizedBox(
-                //   height: scHeight(context) * 0.059,
-                //   width: double.infinity,
-                //   child:
-                //   FilledButton(
-                //     onPressed: () {
-                //       if (formKey.currentState!.validate()) {
-                //
-                //         try{
-                //           FormData formData = FormData(
-                //               customerNameController.text,
-                //               customerPrimaryContactNumberController.text,
-                //               customerSecondaryContactNumberController.text,
-                //               customerSmartPhoneBrandController.text,
-                //               customerSmartPhoneModelController.text,
-                //               double.parse(totalRepairCostController.text),
-                //               double.parse(advancePaidController.text),
-                //               double.parse(balanceAmountController.text), double.parse(totalAmountReceivedController.text),
-                //               phoneCollectorNameController.text,
-                //               Timestamp.fromDate(_selectedSubmitDate),
-                //               Timestamp.fromDate(_selectedCollectDate),
-                //               _selectedSubmitDate,
-                //               _selectedCollectDate);
-                //
-                //           formMethods.saveDataToFirestore('service_history', formData.toJson());
-                //
-                //           customerNameController.clear();
-                //           customerPrimaryContactNumberController.clear();
-                //           customerSecondaryContactNumberController.clear();
-                //           customerSmartPhoneBrandController.clear();
-                //           customerSmartPhoneModelController.clear();
-                //           totalRepairCostController.clear();
-                //           advancePaidController.clear();
-                //           balanceAmountController.clear();
-                //           totalAmountReceivedController.clear();
-                //           phoneCollectorNameController.clear();
-                //           deviceSubmittedDateController.clear();
-                //           deviceCollectedDateController.clear();
-                //         }
-                //         catch(e){
-                //           Utils.flushBarErrorMessages(e.toString(), context);
-                //         }
-                //         // ScaffoldMessenger.of(context).showSnackBar(
-                //         //   const SnackBar(
-                //         //     content: Text('Processing Data'),
-                //         //   ),
-                //         // );
-                //
-                //
-                //       // Timestamp timestamp = Timestamp.fromDate(_selectedSubmitDate);
-                //       // print(timestamp);
-                //       // print(timestamp);
-                //     }
-                //     },
-                //     child: const Text("Save Data"),
-                //   ),
-                // ),
-
                 Consumer<FormProvider>(
                   builder: (context, provider, child) {
                     return formMethods.loading
@@ -447,16 +392,57 @@ class _FormScreenState extends State<FormScreen> {
                                         phoneCollectorNameController.text,
                                         _selectedSubmitDate,
                                         _selectedCollectDate,
-                                      DateTime.now().microsecondsSinceEpoch,
-                                      customerSmartPhoneIssueController.text,
-                                    );
-
-
+                                        DateTime.now().microsecondsSinceEpoch,
+                                        customerSmartPhoneIssueController.text,
+                                        'tempDocumentId');
 
                                     formMethods
                                         .saveDataToFirestore('service_history',
                                             formData.toJson())
-                                        .then((_) {
+                                        .then((docId) {
+                                      if (kDebugMode) {
+                                        print(
+                                            'Saved with temporary DocumentId');
+                                        print('Firestore DocumentId: $docId');
+                                      }
+
+                                      FormData updatedFormData = FormData(
+                                        customerNameController.text,
+                                        customerPrimaryContactNumberController
+                                            .text,
+                                        customerSecondaryContactNumberController
+                                            .text,
+                                        customerSmartPhoneBrandController.text,
+                                        customerSmartPhoneModelController.text,
+                                        double.parse(
+                                            totalRepairCostController.text),
+                                        double.parse(
+                                            advancePaidController.text),
+                                        double.parse(
+                                            balanceAmountController.text),
+                                        double.parse(
+                                            totalAmountReceivedController.text),
+                                        phoneCollectorNameController.text,
+                                        _selectedSubmitDate,
+                                        _selectedCollectDate,
+                                        DateTime.now().microsecondsSinceEpoch,
+                                        customerSmartPhoneIssueController.text,
+                                        docId,
+                                      );
+
+                                      formMethods
+                                          .updateDocIdToFirebase(
+                                              'service_history',
+                                              docId,
+                                              updatedFormData.toJson())
+                                          .then((_) {
+                                        if (kDebugMode) {
+                                          print(
+                                              'Updated documentID to Firestore');
+                                        }
+                                      });
+
+                                      // Clear all controllers
                                       customerNameController.clear();
                                       customerPrimaryContactNumberController
                                           .clear();
@@ -472,11 +458,9 @@ class _FormScreenState extends State<FormScreen> {
                                       phoneCollectorNameController.clear();
                                       deviceSubmittedDateController.clear();
                                       deviceCollectedDateController.clear();
-
-                                      formMethods.setSaving(false);
                                     });
 
-
+                                    formMethods.setSaving(false);
                                   } on FirebaseException catch (e) {
                                     print(formMethods.loading);
                                     formMethods.setSaving(false);
@@ -490,7 +474,6 @@ class _FormScreenState extends State<FormScreen> {
                           );
                   },
                 ),
-
                 SizedBox(
                   height: scHeight(context) * 0.02,
                 ),
