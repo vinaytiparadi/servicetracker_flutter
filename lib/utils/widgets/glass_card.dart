@@ -115,7 +115,7 @@ class GlassCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Device Submitted:',
+                  'Device Issue:',
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
@@ -123,7 +123,7 @@ class GlassCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${data.dateSubmitted.day}/${data.dateSubmitted.month}/${data.dateSubmitted.year}',
+                  data.deviceIssue,
                   style: TextStyle(
                     fontSize: 19.0,
                     color: Color(0xac8482).withOpacity(1.0),
@@ -136,7 +136,7 @@ class GlassCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Device Collected:',
+                  'Device Submitted:',
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
@@ -144,7 +144,7 @@ class GlassCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${data.dateCollected.day}/${data.dateCollected.month}/${data.dateCollected.year}',
+                  '${data.dateSubmitted.day}/${data.dateSubmitted.month}/${data.dateSubmitted.year}',
                   style: TextStyle(
                     fontSize: 19.0,
                     color: Color(0xac8482).withOpacity(1.0),
@@ -173,32 +173,20 @@ class GlassCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Amount Received:',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0x846c64).withOpacity(1.0),
-                  ),
-                ),
-                Text(
-                  '₹'+data.totalAmount.toString(),
-                  style: TextStyle(
-                    fontSize: 19.0,
-                    color: Color(0xac8482).withOpacity(1.0),
-                  ),
-                ),
-              ],
-            ),
             const SizedBox(height: 5.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                FloatingActionButton.small(onPressed: onTap,  child: const Icon(Icons.edit)),
+                // FloatingActionButton.extended(onPressed: onTap,  label: Text('View & Edit'),
+                // child: const Icon(Icons.edit)),
+                FloatingActionButton.extended(onPressed: onTap, label: Row(
+                  children: const [
+                    Icon(Icons.edit),
+                    SizedBox(width: 5.0),
+                    Text('View & Edit'),
+                  ],
+                )
+                ),
               ],
             )
 

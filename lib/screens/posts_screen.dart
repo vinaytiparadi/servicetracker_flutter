@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:service_tracker/screens/edit_form_screen.dart';
-import 'package:service_tracker/utils/widgets/editable_glass_card.dart';
+import 'package:service_tracker/utils/widgets/misc_editable_glass_card.dart';
 import 'package:service_tracker/utils/widgets/glass_card.dart';
 
 import '../models/FormModel.dart';
