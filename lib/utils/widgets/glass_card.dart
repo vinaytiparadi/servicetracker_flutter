@@ -3,8 +3,9 @@ import '../../models/FormModel.dart';
 
 class GlassCard extends StatelessWidget {
   final FormData data;
-
-  GlassCard({required this.data});
+  final VoidCallback onTap;
+  
+  GlassCard({super.key, required this.data, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -193,6 +194,13 @@ class GlassCard extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 5.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FloatingActionButton.small(onPressed: onTap,  child: const Icon(Icons.edit)),
+              ],
+            )
 
           ],
         ),

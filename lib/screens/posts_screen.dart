@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:service_tracker/screens/edit_form_screen.dart';
+import 'package:service_tracker/utils/widgets/editable_glass_card.dart';
 import 'package:service_tracker/utils/widgets/glass_card.dart';
 
 import '../models/FormModel.dart';
@@ -129,7 +134,40 @@ class _PostListPageState extends State<PostListPage> {
                       if (index < filteredPosts.length) {
                         final post = filteredPosts[index];
                         // Display post data here
-                        return GlassCard(data: post);
+                        // return EditableGlassCard(data: post, onUpdate: (updatedForm)async{
+                        //
+                        //   try {
+                        //     final user = FirebaseAuth.instance.currentUser;
+                        //
+                        //
+                        //     await FirebaseFirestore.instance
+                        //         .collection('users')
+                        //         .doc(user!.uid)
+                        //         .collection('service_history')
+                        //         .doc(post.documentId)
+                        //         .update(updatedForm.toJson());
+                        //   } catch (error) {
+                        //     // Handle the error
+                        //     if(kDebugMode){
+                        //       print('Error updating document: $error');
+                        //     }
+                        //   }
+                        //
+                        //
+                        // });
+                        return GlassCard(data: post, onTap: (){
+                          print('hello');
+                          
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => EditFormScreen(formData: post,)),
+                          ).then((value){
+                            setState(() {
+                              _refreshPosts();
+                            });
+                          });
+                          
+                        },);
                       } else if (provider.isLoading) {
                         return const Center(child: CircularProgressIndicator());
                       } else {
