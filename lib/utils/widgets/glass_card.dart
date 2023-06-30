@@ -1,11 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:service_tracker/utils/utility_methods.dart';
 import '../../models/FormModel.dart';
 
 class GlassCard extends StatelessWidget {
   final FormData data;
-  final VoidCallback onTap;
-  
-  GlassCard({super.key, required this.data, required this.onTap});
+  final VoidCallback onTapEdit;
+  final VoidCallback onTapDelete;
+
+  GlassCard({super.key, required this.data, required this.onTapEdit, required this.onTapDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +65,7 @@ class GlassCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '+91'+data.customerPrimaryContactNumber,
+                  '+91' + data.customerPrimaryContactNumber,
                   style: TextStyle(
                     fontSize: 19.0,
                     color: Color(0xac8482).withOpacity(1.0),
@@ -165,7 +170,7 @@ class GlassCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '₹'+data.totalRepairCost.toString(),
+                  '₹' + data.totalRepairCost.toString(),
                   style: TextStyle(
                     fontSize: 19.0,
                     color: Color(0xac8482).withOpacity(1.0),
@@ -179,17 +184,22 @@ class GlassCard extends StatelessWidget {
               children: [
                 // FloatingActionButton.extended(onPressed: onTap,  label: Text('View & Edit'),
                 // child: const Icon(Icons.edit)),
-                FloatingActionButton.extended(onPressed: onTap, label: Row(
-                  children: const [
-                    Icon(Icons.edit),
-                    SizedBox(width: 5.0),
-                    Text('View & Edit'),
-                  ],
-                )
+                FloatingActionButton.extended(
+                    onPressed: onTapEdit,
+                    label: Row(
+                      children: const [
+                        Icon(Icons.edit),
+                        SizedBox(width: 5.0),
+                        Text('View & Edit'),
+                      ],
+                    )),
+                const SizedBox(width: 8.0),
+                FloatingActionButton.small(
+                  onPressed: onTapDelete,
+                  child: const Icon(Icons.delete),
                 ),
               ],
             )
-
           ],
         ),
       ),

@@ -9,6 +9,7 @@ import 'package:service_tracker/utils/widgets/glass_card.dart';
 
 import '../models/FormModel.dart';
 import '../providers/post_provider.dart';
+import '../utils/utility_methods.dart';
 
 class PostListPage extends StatefulWidget {
   @override
@@ -155,9 +156,7 @@ class _PostListPageState extends State<PostListPage> {
                         //
                         //
                         // });
-                        return GlassCard(data: post, onTap: (){
-                          print('hello');
-                          
+                        return GlassCard(data: post, onTapEdit: (){
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => EditFormScreen(formData: post,)),
@@ -167,7 +166,32 @@ class _PostListPageState extends State<PostListPage> {
                             });
                           });
                           
-                        },);
+                        },
+                        onTapDelete: (){
+                          final firestore = FirebaseFirestore.instance;
+                          final user = FirebaseAuth.instance.currentUser;
+                          firestore
+                              .collection('users')
+                              .doc(user!.uid)
+                              .collection('service_history')
+                              .doc(post.documentId)
+                              .delete()
+                              .then(
+                                (doc) {
+
+                              if (kDebugMode) {
+                                print("Document deleted");
+                              }
+                              _refreshPosts();
+                            },
+                            onError: (e) {
+                              Utils.flushBarErrorMessages(
+                                  'Error: ${e.toString()}', context);
+                              print("Error updating document $e");
+                            },
+                          );
+                        },
+                        );
                       } else if (provider.isLoading) {
                         return const Center(child: CircularProgressIndicator());
                       } else {
